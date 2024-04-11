@@ -14,12 +14,12 @@
 
 //using namespace std;
 float func[5000][2];
-//les variables ci dessus permettent de cadrer l'interface graphique et de crÈer des effets d'homothÈtie 
+//les variables ci dessus permettent de cadrer l'interface graphique et de cr√©er des effets d'homoth√©tie 
 float xmin = -20;
 float xmax = 20;
 float ymin = -20;
 float ymax = 20;
-float a = 1.5; //coefficient d'homothÈtie
+float a = 1.5; //coefficient d'homoth√©tie
 float b = 1;
 float r = 0;
 float t; // = 4 * ymax - a * 3.6;
@@ -85,7 +85,7 @@ void myKey(int c)
 /**
 * myDraw
 *
-* ProcÈdure
+* Proc√©dure
 *
 */
 static void Begin2DDisplay(void)
@@ -171,7 +171,7 @@ void myDraw(void)
 
 
     }
-    /*flËche*/
+    /*fl√®che*/
     setcolor(0.0F, 0.0F, 0.0F);
     line(xmax, 0, xmax - b, -b);
     line(xmax, 0, xmax - b, b);
@@ -196,13 +196,13 @@ void myDraw(void)
 /**
 * main
 *
-* La fonction principale avec deux arguments permettant de rÈcupÈrer les ÈlÈments en ligne de comment.
+* La fonction principale avec deux arguments permettant de r√©cup√©rer les √©l√©ments en ligne de comment.
 *
-* Dans  cet  exemple  les  fonctions  (dites  callback)  myDraw  et  myKey  sont  installÈes  ici  par
-* l'appel  InitGraph  en  tant  que fonctions  rÈagissantes  aux  ÈvËnements  de  "re-dessinage"  (pour  myDraw)
-* et  aux  ÈvËnements  d'appui  sur  une  touche  du
+* Dans  cet  exemple  les  fonctions  (dites  callback)  myDraw  et  myKey  sont  install√©es  ici  par
+* l'appel  InitGraph  en  tant  que fonctions  r√©agissantes  aux  √©v√®nements  de  "re-dessinage"  (pour  myDraw)
+* et  aux  √©v√®nements  d'appui  sur  une  touche  du
 * clavier (myKey).
-µ
+¬µ
 * @parma ac : nombre de parametres
 * @parma av : tableau contenant les parametres
 *
@@ -226,15 +226,18 @@ int main(int ac, char* av[]){
     
 
 
-    //gÈnÈration du tableau qui permettra de dessiner la fonction
+    //g√©n√©ration du tableau qui permettra de dessiner la fonction
    
    
-    
-    
-    const char* fonction = "sin(cos(x))";
-    typejeton jeton[100]; // Tableau pour stocker les jetons
-    int nb_jetons = lire_jeton(fonction, jeton);
-
+    typeerreur erreur = OK; //Derni√®re erreur detect√©e
+    char fonction[200]; // Allouer de la m√©moire pour stocker la cha√Æne de caract√®res
+  
+    printf("Enter an equation: \n");
+    scanf("%s", fonction);  
+    typejeton jeton[200]; // Tableau pour stocker les jetons
+  
+    int nb_jetons = lire_jeton(fonction, jeton, &erreur);
+    afficher_jeton(jeton, nb_jetons);
     
     Node* arbre = arbre_binaire(jeton, nb_jetons);
     afficher_arbre(arbre);
