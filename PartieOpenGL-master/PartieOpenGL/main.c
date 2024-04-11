@@ -1,29 +1,30 @@
 /**************************
-   * Includes
-   *
-   **************************/
-#include <windows.h>
-#include <math.h>
-#include<string.h>
+ * Includes
+ *
+ **************************/
 
+#include <windows.h>
+#include <string.h>
+#include <stdio.h>
+#include <math.h>
 #include "graph.h"
 #include "glut.h"
-#include"evaluateur.h"
-#include "syntaxique.h"
-#include "lexical.h"
 
-//using namespace std;
-float func[5000][2];
-//les variables ci dessus permettent de cadrer l'interface graphique et de créer des effets d'homothétie 
-float xmin = -20;
-float xmax = 20;
-float ymin = -20;
-float ymax = 20;
-float a = 1.5; //coefficient d'homothétie
-float b = 1;
-float r = 0;
-float t; // = 4 * ymax - a * 3.6;
-float pas = 1.0;
+int window_width = 1200;
+int window_height = 600;
+float xmin = -5;
+float xmax = 5;
+float ymin = -5;
+float ymax = 5;
+int nbValues = 100;
+float pos_axe_hauteur;
+float pos_axe_largeur;
+float pas;
+int xi1 = 0;
+int xi2 = 0;
+int yi1 = 0;
+int yi2 = 0;
+
 /**
 * myKey
 *
@@ -32,55 +33,6 @@ float pas = 1.0;
 * @parma c code ascci definissant une touche du clavier
 *
 */
-void myKey(int c)
-{
-
-    switch (c)
-    {
-    case '+':
-        xmin = xmin / a;
-        ymin = ymin / a;
-        ymax = ymax / a;
-        xmax = xmax / a;/* La bascule passe alternativement de 0 a 1 */
-        t /= a;
-        b /= a;
-        break;
-    case '-':
-        xmin *= a;
-        xmax *= a;
-        ymin *= a;
-        ymax *= a;
-        t *= 1.25;
-        b *= a;
-        break;
-    case '6':
-        xmin += b * 0.4;
-        xmax += b * 0.4;
-        r += a * 1.6;
-        break;
-    case '4':
-        xmin -= b * 0.4;
-        xmax -= b * 0.4;
-        r -= a * 1.6;
-
-        break;
-    case '8':
-        ymin += b * 0.4;
-        ymax += b * 0.4;
-        t += 1.6 * a;
-
-        break;
-    case '5':
-        ymin -= b * 0.4;
-        ymax -= b * 0.4;
-        t -= 1.6 * a;
-        break;
-
-
-
-    }
-}
-
 
 /**
 * myDraw
@@ -88,109 +40,6 @@ void myKey(int c)
 * Procédure
 *
 */
-static void Begin2DDisplay(void)
-{
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    glOrtho(xmin, xmax, ymin, ymax, 0.5, 1.5);
-
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();
-    glTranslatef(0.0F, 0.0F, -1.0F);
-}
-
-void myDraw(void)
-{
-
-    Begin2DDisplay();
-    /* trace l'axe*/
-    setcolor(0.0F, 0.0F, 0.0F);
-    line(0, ymin, 0, ymax);
-    setcolor(0.0F, 0.0F, 0.0F);
-    line(xmin, 0, xmax, 0);
-
-
-    /*tracer graduations*/
-    if ((xmax - xmin) < 50)
-    {
-        pas = 1;
-
-    }
-    else if ((xmax - xmin) < 170) { pas = 10; }
-    else if (xmax < 200) { pas = 100; }
-    else { pas = 200; }
-    float mm = round(xmin / pas) * pas;
-    int count = mm;
-    while (mm < xmax) {
-        if (mm != 0) {
-            setcolor(0.8F, 0.8F, 0.8F);
-            line(mm, ymin, mm, ymax);
-            setcolor(0.0F, 0.0F, 0.0F);
-            if (b < 1) {
-                line(mm, -pas * b / 3, mm, pas * b / 3);
-
-
-            }
-            if (b > 1) {
-                line(mm, -pas / b / 3, mm, pas / b / 3);
-            }
-
-
-
-        }
-        char str[10];
-        sprintf(str, "%d", count); 
-
-        if (mm != 0) { outtextxy(mm, pas / 3, str); };
-        count += pas;
-        mm += pas;
-    }
-    float nn = round(ymin / pas) * pas;
-    count = nn;
-    while (nn < ymax) {
-        if (nn != 0) {
-            setcolor(0.8F, 0.8F, 0.8F);
-            line(xmin, nn, xmax, nn);
-            setcolor(0.0F, 0.0F, 0.0F);
-            if (b > 1) {
-                line(-pas / b / 3, nn, pas / b / 3, nn);
-            }
-            else {
-                line(-pas * b / 3, nn, pas * b / 3, nn);
-            }
-
-        }
-        char str[10];
-        sprintf(str, "%d", count);
-        outtextxy(pas / 3, nn, str);
-        count += pas;
-        int arrondi = floor(abs(xmax));
-        nn += pas;
-
-
-    }
-    /*flèche*/
-    setcolor(0.0F, 0.0F, 0.0F);
-    line(xmax, 0, xmax - b, -b);
-    line(xmax, 0, xmax - b, b);
-    line(0, ymax, -b, (ymax - b));
-    line(0, ymax, b, (ymax - b));
-
-    /*tracer courbe*/
-    int k = 1;
-
-    while (func[k][0] != '\0'){
-        setcolor(1.0F, 0.0F, 0.0F);
-        line(func[k - 1][0], func[k - 1][1], func[k][0], func[k][1]);
-        k++;
-        
-    }
-
-            
-}
-
 
 
 /**
@@ -207,50 +56,108 @@ void myDraw(void)
 * @parma av : tableau contenant les parametres
 *
 */
-int main(int ac, char* av[]){
 
-    t = 4 * ymax - a * 3.6;
-    
-    
-    float step;
-    float x_min;
-    float x_max;
-    int nb_echantillon;
+void graduation() {
+    float pas_graduation = (taille_ecran * 2) / 10;
+    char value_grad_x[100];
+    char value_grad_y[100];
+    setcolor(0.0F, 0.0F, 0.0F);
+    for (int i = 0; i < 10; i++) {
+        line(-taille_ecran + pas_graduation * i, pos_axe_largeur - 10, -600 + pas_graduation * i, pos_axe_largeur + 10);
+        line(pos_axe_hauteur - 5, -taille_ecran + pas_graduation * i, pos_axe_hauteur + 5, -600 + pas_graduation * i);
+        if ((xmin + (10 * pas) * i) == 0.0) {
+            sprintf(&value_grad_x, "");
+        }
+        else {
+            sprintf(&value_grad_x, "%.2f", (xmin + ((xmax - xmin) / 10 * i)));
+        }
+        printf("\n%f, %d, %f, %f", (xmin + ((xmax - xmin) / 10 * i)), i, xmin, ((xmax - xmin) / 10 * i));
+        //printf("%f\n", (xmin + (5 * pas)*i));
+        // settextstyle(0, 0, 5);
+        outtextxy(pas_graduation * i - 15 - taille_ecran, pos_axe_largeur - 50, value_grad_x);
 
-    printf("Choississez votre x minimum : ");
-    scanf("%f", &x_min);
-    printf("Choississez votre x maximum : ");
-    scanf("%f", &x_max);
-    printf("Choississez le pas : ");
-    scanf("%f", &step);
-    
-
-
-    //génération du tableau qui permettra de dessiner la fonction
-   
-   
-    
-    
-    const char* fonction = "sin(cos(x))";
-    typejeton jeton[100]; // Tableau pour stocker les jetons
-    int nb_jetons = lire_jeton(fonction, jeton);
-
-    
-    Node* arbre = arbre_binaire(jeton, nb_jetons);
-    afficher_arbre(arbre);
-    float aljmin = x_min;
-    int i = 0;
-    while (aljmin <= x_max) {
-        func[i][0] = aljmin;
-        func[i][1] = Evaluateur(arbre, aljmin);
-        printf("%f \n", func[i][0]);
-        printf("%f \n", func[i][1]);
-        aljmin += step;
-        i++;
-
+        if ((ymin + (10 * pas) * i) == 0.0) {
+            sprintf(&value_grad_y, "");
+        }
+        else {
+            sprintf(&value_grad_y, "%0.2f", (ymin + ((ymax - ymin) / 10 * i)));
+        }
+        //printf("%f\n", (xmin + (5 * pas) * i));
+        //settextstyle(0, 0, 5);
+        //printf("%s\n", value_grad_y);
+        outtextxy(pos_axe_hauteur - 30, pas_graduation * i - 5 - taille_ecran, value_grad_y);
+        outtextxy(pos_axe_hauteur - 30, pos_axe_largeur - 25, "0.00");
     }
-    
+}
 
-   InitGraph(ac, av, "Graphic Output", 640, 480, myDraw, myKey);
+void affichage_fonction(float xy[2][1000]) {
+    // Rajouter le décalage si les axes sont pas centrés
+    for (int i = 1; i < nbValues; i++) {
+        xi1 = (int)((xy[0][i - 1]) * taille_ecran / abs(xmin));
+        xi2 = (int)((xy[0][i]) * taille_ecran / abs(ymin));
+        yi1 = (int)((xy[1][i - 1]) * taille_ecran / abs(xmax));
+        yi2 = (int)((xy[1][i]) * taille_ecran / abs(ymax));
+        setcolor(0.0F, 0.0F, 0.0F);
+        line(xi1, yi1, xi2, yi2);
+        printf("\n%f | %d | %d", xy[0][i - 1]);
+        printf("\n%d : %d | %d | %d | %d", i, xi1, yi1, xi2, yi2);
+        //line(i, i*i, (i+1), (i+1)* (i + 1));
+    }
+    /*
+    line(-600, 115, -588, 117);
+    line(-588, 117, -576, 119);
+    line(-576, 119, -564, 119);
+    */
+}
+
+void myDraw() {
+
+    float xy[2][1000];
+    for (int i = 0; i < nbValues; i++) {
+        xy[0][i] = xmin + pas * i;
+        xy[1][i] = sin(xy[0][i]);
+        //printf("\nx : %f | y : %f", xy[0][i], xy[1][i]);
+    }
+
+    float pas_unite_x = (taille_ecran * 2) / (xmax - xmin);
+    float pas_unite_y = (taille_ecran * 2) / (ymax - ymin);
+    pos_axe_hauteur = -xmin * pas_unite_x - 600;
+    pos_axe_largeur = -ymin * pas_unite_y - 600;
+    setcolor(1.0F, 1.0F, 1.0F);
+    bar(-taille_ecran, -taille_ecran, taille_ecran, taille_ecran);
+
+    setcolor(0.0F, 0.0F, 0.0F);
+    line(-taille_ecran, pos_axe_largeur, taille_ecran, pos_axe_largeur);
+    line(pos_axe_hauteur, -taille_ecran, pos_axe_hauteur, taille_ecran);
+
+    graduation();
+    affichage_fonction(xy);
+}
+
+void def_vars() {
+    printf("Veuillez entre la valeur minimale de l'axe des abscisses : ");
+    scanf("%f", &xmin);
+    printf("\n");
+    printf("Veuillez entre la valeur maximale de l'axe des abscisses : ");
+    scanf("%f", &xmax);
+    printf("\n");
+    printf("Veuillez entre la valeur minimale de l'axe des ordonnées : ");
+    scanf("%f", &ymin);
+    printf("\n");
+    printf("Veuillez entre la valeur maximale de l'axe des ordonnées : ");
+    scanf("%f", &ymax);
+    printf("\n");
+    printf("Veuillez entre le nombre de valeurs : ");
+    scanf("%d", &nbValues);
+    pas = (xmax - xmin) / ((float)nbValues);
+}
+
+int main(int ac, char* av[])
+{
+    def_vars();
+    printf("Vous avez choisi : xmin = %d, xmax = %d, ymin = %d, ymax = %d, nb_valeurs = %d et pas = %f", xmin, xmax, ymin, ymax, nbValues, pas);
+    InitGraph(ac, av, "Calculateur Graphique", window_width, window_height, myDraw);
     return 0;
 }
+
+

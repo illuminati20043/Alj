@@ -53,7 +53,7 @@ static void Begin2DDisplay(void)
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
-    glOrtho(-1, 1, -1.0, 1.0, 0.5, 1.5);
+    glOrtho(-600, 600, -600.0, 600.0, 0.5, 1.5);
 
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
@@ -107,8 +107,7 @@ static void GlutDraw(void)
 *
 */
 void InitGraph(int ac, char* av[],
-    const char* WinName, const int w, const int h, void (*Draw)(void),
-    void (*Key)(int))
+    const char* WinName, const int w, const int h, void (*Draw)(float* xy[2][1000]))
 {
     glutInit(&ac, av);
     Width = w;
@@ -119,8 +118,6 @@ void InitGraph(int ac, char* av[],
     WindowNumber = glutCreateWindow(WinName);
     glutReshapeFunc(GlutReshape); /* fonction appelee qd fenetre redimensionnee */
     glutIdleFunc(GlutIdle); /* fonction appelee en boucle */
-    AppliKey = Key;
-    glutKeyboardFunc(GlutKey);
     AppliDraw = Draw;
     glutDisplayFunc(GlutDraw);
     InitDisplay();

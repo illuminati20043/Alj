@@ -19,8 +19,6 @@ typedef enum {
 //énumération des différents types d'opérateurs existants
 typedef enum { PLUS, MOINS, FOIS, DIV, PUISS } typeoperateur;
 
-
-
 //énumération des différents types de fonctions éxistantes
 typedef enum {
 	ABS,
@@ -35,7 +33,7 @@ typedef enum {
 	SINC
 } typefonction;
 //énumération des différents types d'erreurs éxistantes
-typedef enum { AREMPLIR } typeerreur;
+typedef enum { OK, CHAR_INCONNU, REEL_INVALID, CHAR_INVALID } typeerreur;
 //énumération des différents types de valeurs éxistantes
 typedef union {
 	float reel;
