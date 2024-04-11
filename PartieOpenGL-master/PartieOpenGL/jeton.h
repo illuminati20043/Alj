@@ -1,6 +1,6 @@
 #ifndef JETON_H
 #define JETON_H
-//énumération des différents types de lexems existants
+//Ã©numÃ©ration des diffÃ©rents types de lexems existants
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -16,12 +16,12 @@ typedef enum {
 	VARIABLE,
 	ABSOLU
 } typelexem;
-//énumération des différents types d'opérateurs existants
+//Ã©numÃ©ration des diffÃ©rents types d'opÃ©rateurs existants
 typedef enum { PLUS, MOINS, FOIS, DIV, PUISS } typeoperateur;
 
 
 
-//énumération des différents types de fonctions éxistantes
+//Ã©numÃ©ration des diffÃ©rents types de fonctions Ã©xistantes
 typedef enum {
 	ABS,
 	SIN,
@@ -34,21 +34,21 @@ typedef enum {
 	VAL_NEG,
 	SINC
 } typefonction;
-//énumération des différents types d'erreurs éxistantes
-typedef enum { AREMPLIR } typeerreur;
-//énumération des différents types de valeurs éxistantes
+//Ã©numÃ©ration des diffÃ©rents types d'erreurs Ã©xistantes
+typedef enum { OK, CHAR_INCONNU, REEL_INVALID, CHAR_INVALID } typeerreur;
+//Ã©numÃ©ration des diffÃ©rents types de valeurs Ã©xistantes
 typedef union {
 	float reel;
 	typefonction fonction;
 	typeoperateur operateur;
 	typeerreur erreur;
 } typevaleur;
-//énumération des différents types de jetons éxistants
+//Ã©numÃ©ration des diffÃ©rents types de jetons Ã©xistants
 typedef struct {
 	typelexem lexem;
 	typevaleur valeur;
 } typejeton;
-// déclaration de l'arbre
+// dÃ©claration de l'arbre
 typedef struct Node {
 	typejeton jeton;
 	struct Node* pjeton_preced;
