@@ -1,34 +1,49 @@
 #include "evaluateur.h"
 #include "jeton.h"
-	
+
+//evalue la valeur du code grace a de la recursivité
+
 float Evaluateur(Node* A, float X)
 {
+	//si c'est vide
 	if (A == NULL) {
 		return NAN;
 	}
-
+	//cas ou il y a réel
 	switch (A->jeton.lexem) {
 	case REEL:
 		return A->jeton.valeur.reel;
 		break;
+	//cas ou il y a variable x
 	case VARIABLE:
 		return X;
 		break;
+	//cas opérateur
 	case OPERATEUR:
 		switch (A->jeton.valeur.operateur) {
 
 		case PLUS:
-			return Evaluateur(A->pjeton_preced, X) + Evaluateur(A->pjeton_suiv, X);
+			if (A->pjeton_suiv == NULL) { printf("Erreur syntaxe"); }
+			else { return Evaluateur(A->pjeton_preced, X) + Evaluateur(A->pjeton_suiv, X); }
 			break;
 		case MOINS:
-			return Evaluateur(A->pjeton_preced, X) - Evaluateur(A->pjeton_suiv, X);
+			if (A->pjeton_suiv == NULL) { printf("Erreur syntaxe");  }
+			else { return Evaluateur(A->pjeton_preced, X) - Evaluateur(A->pjeton_suiv, X); }
 			break;
 		case FOIS:
-			return Evaluateur(A->pjeton_preced, X) * Evaluateur(A->pjeton_suiv, X);
+			if (A->pjeton_suiv == NULL) { printf("Erreur syntaxe"); }
+			else { return Evaluateur(A->pjeton_preced, X) *Evaluateur(A->pjeton_suiv, X); }
 			break;
 		case PUISS:
 			return powf(Evaluateur(A->pjeton_preced, X), Evaluateur(A->pjeton_suiv, X));
 			break;
+		case DIV:
+			if (A->pjeton_suiv->jeton.valeur.reel == 0) {
+				printf("Erreur syntaxe division par 0");
+
+			}
+			else{return Evaluateur(A->pjeton_preced, X) / Evaluateur(A->pjeton_suiv, X);
+			}
 		default:
 			printf("non");
 			return 0;
@@ -37,7 +52,7 @@ float Evaluateur(Node* A, float X)
 		}
 
 
-	
+	//cas fonction
 	case FONCTION:
 		switch (A->jeton.valeur.fonction) {
 		case SIN:
