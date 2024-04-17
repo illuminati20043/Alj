@@ -4,8 +4,8 @@
 /**
 * @file Graph.cpp
 *
-* @brief présente les quelques fonctionnalités nécessaires dans le cadre de ce projet
-* Il contient la définition des méthodes utilisées
+* @brief prÃ©sente les quelques fonctionnalitÃ©s nÃ©cessaires dans le cadre de ce projet
+* Il contient la dÃ©finition des mÃ©thodes utilisÃ©es
 *
 */
 
@@ -13,12 +13,16 @@ static int WindowNumber;
 static int Width, Height;
 static void (*AppliDraw)(void);
 static void (*AppliKey)(int);
+static void (*AppliSpecial)(int);
+static void (*AppliMouse)(int);
+int keyPressed = 0;
+
 
 
 /**
 * GlutReshape
 *
-* Cette procédure permet de gerer la taille de la fenetre quand (redimensionnée)
+* Cette procÃ©dure permet de gerer la taille de la fenetre quand (redimensionnÃ©e)
 *
 * @parma w largeur de la fenetre gl
 * @parma h hauteur de la fenetre gl
@@ -47,13 +51,43 @@ static void GlutKey(const unsigned char c, const int x, const int y)
     glutPostRedisplay();
 }
 
+static void GlutSpecial(const unsigned char c, const int x, const int y)
+{
+    switch (c)
+    {
+    default:
+        if (AppliSpecial) (*AppliSpecial)(c);
+        break;
+    }
+    glutPostRedisplay();
+}
+
+static void GlutMouse(int button, int state, int x, int y)
+{
+    switch (button)
+    {
+    default:
+        if (AppliMouse) (*AppliMouse)(button, state, x, y);
+        break;
+    }
+    glutPostRedisplay();
+}
+
+/*
+static void GlutMousePos(int x, int y)
+{
+    (AppliMousePos) (*AppliMousePos)();
+    glutPostRedisplay();
+}
+*/
+
 
 static void Begin2DDisplay(void)
 {
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
-    glOrtho(-600, 600, -600.0, 600.0, 0.5, 1.5);
+    glOrtho(-600.0, 600.0, -600.0, 600.0, 0.5, 1.5);
 
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
@@ -101,13 +135,13 @@ static void GlutDraw(void)
 * @parma WinName definit le nom (titre) de la fentre d'affichage
 * @parma w definit la largeur de la fenetre
 * @parma h definit la hauteur de la fenetre
-* @parma Draw définit une méthode de traçage
-* @parma Key définit une méthode permettant la détection des touche du clavier
+* @parma Draw dÃ©finit une mÃ©thode de traÃ§age
+* @parma Key dÃ©finit une mÃ©thode permettant la dÃ©tection des touche du clavier
 * @parma c entier designant le code ascii d'une touche
 *
 */
 void InitGraph(int ac, char* av[],
-    const char* WinName, const int w, const int h, void (*Draw)(float* xy[2][1000]))
+    const char* WinName, const int w, const int h, void (*Draw)(void), void (*Key)(int), void (*Special)(unsigned char, int, int), void (*Mouse)(int, int, int, int))
 {
     glutInit(&ac, av);
     Width = w;
@@ -118,6 +152,14 @@ void InitGraph(int ac, char* av[],
     WindowNumber = glutCreateWindow(WinName);
     glutReshapeFunc(GlutReshape); /* fonction appelee qd fenetre redimensionnee */
     glutIdleFunc(GlutIdle); /* fonction appelee en boucle */
+    AppliKey = Key;
+    glutKeyboardFunc(GlutKey);
+    AppliSpecial = Special;
+    glutSpecialFunc(GlutSpecial);
+    AppliMouse = Mouse;
+    glutMouseFunc(GlutMouse);
+    //AppliPos = Pos;
+    //glutMotionFunc(GlutMousePos);
     AppliDraw = Draw;
     glutDisplayFunc(GlutDraw);
     InitDisplay();
@@ -127,7 +169,7 @@ void InitGraph(int ac, char* av[],
 /**
 * setcolor
 *
-* Cette procédure permet de definire une couleur par ces trois composantes
+* Cette procÃ©dure permet de definire une couleur par ces trois composantes
 *
 * @parma r composante du plan rouge
 * @parma v composante du plan vert
@@ -142,12 +184,12 @@ void setcolor(const float r, const float v, const float b)
 /**
 * line
 *
-* Cette procédure permet de tracher une ligne entre deux points (x0, y0) et (x1,y1)
+* Cette procÃ©dure permet de tracher une ligne entre deux points (x0, y0) et (x1,y1)
 *
 * @parma x0 abscisse 1er point
-* @parma y0 ordonnée 1er point
+* @parma y0 ordonnÃ©e 1er point
 * @parma x0 abscisse 2eme point
-* @parma y0 ordonnée 2eme point
+* @parma y0 ordonnÃ©e 2eme point
 *
 */
 void line(const float x0, const float y0, const float x1, const float y1)
@@ -161,7 +203,7 @@ void line(const float x0, const float y0, const float x1, const float y1)
 /**
 * beginlines
 *
-* Cette procédure permet
+* Cette procÃ©dure permet
 *
 * @parma x0
 * @parma y0
@@ -197,11 +239,11 @@ void bar(const float x0, const float y0, const float x1, const float y1)
 /**
 * outtextxy
 *
-* Cette procédure permet d'ecrit une chaine de charactère s dans une zone de texte définie par les coordonnées x et y
+* Cette procÃ©dure permet d'ecrit une chaine de charactÃ¨re s dans une zone de texte dÃ©finie par les coordonnÃ©es x et y
 *
 * @parma x abscisse du point (coint gauche superieur) de la zone de texte
-* @parma y ordonnée du point (coint gauche superieur) de la zone de texte
-* @parma s tableau de charctères
+* @parma y ordonnÃ©e du point (coint gauche superieur) de la zone de texte
+* @parma s tableau de charctÃ¨res
 *
 */
 void outtextxy(const float x, const float y, const char* str)
